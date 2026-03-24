@@ -1,16 +1,64 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useCallback } from "react";
+import { toast } from "sonner";
+import Header from "@/components/Header";
+import HeroSection from "@/components/HeroSection";
+import ProductGrid from "@/components/ProductGrid";
+import AboutSection from "@/components/AboutSection";
+import OrderForm from "@/components/OrderForm";
+import CartDrawer, { CartItem } from "@/components/CartDrawer";
+import Footer from "@/components/Footer";
+import { Product } from "@/components/ProductCard";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+
+  const handleAddToCart = useCallback((product: Product) => {
+    setCartItems((prev) => {
+      const existing = prev.find((item) => item.product.id === product.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prev, { product, quantity: 1 }];
+    });
+    toast.success(`${product.name} adicionado à sacola!`);
+  }, []);
+
+  const handleUpdateQuantity = useCallback((productId: number, delta: number) => {
+    setCartItems((prev) =>
+      prev
+        .map((item) =>
+          item.product.id === productId ? { ...item, quantity: Math.max(0, item.quantity + delta) } : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+  }, []);
+
+  const handleRemove = useCallback((productId: number) => {
+    setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
+  }, []);
+
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="min-h-screen">
+      <Header cartCount={cartCount} onCartClick={() => setCartOpen(true)} />
+      <HeroSection />
+      <ProductGrid onAddToCart={handleAddToCart} />
+      <AboutSection />
+      <OrderForm />
+      <Footer />
+      <CartDrawer
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        items={cartItems}
+        onUpdateQuantity={handleUpdateQuantity}
+        onRemove={handleRemove}
+      />
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
