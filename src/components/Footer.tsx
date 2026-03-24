@@ -24,13 +24,13 @@ const Footer = () => {
           <div>
             <h4 className="font-body text-sm tracking-widest uppercase text-gold-light mb-4">Contato</h4>
             <div className="space-y-3">
-              <a href="#" className="flex items-center gap-3 font-body text-sm text-secondary/60 hover:text-gold-light transition-colors">
+              <a href="https://instagram.com/kbellaaura" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 font-body text-sm text-secondary/60 hover:text-gold-light transition-colors">
                 <Instagram size={16} /> @kbellaaura
               </a>
-              <a href="#" className="flex items-center gap-3 font-body text-sm text-secondary/60 hover:text-gold-light transition-colors">
-                <Phone size={16} /> (00) 00000-0000
+              <a href="https://wa.me/5585996176945" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 font-body text-sm text-secondary/60 hover:text-gold-light transition-colors">
+                <Phone size={16} /> (85) 9 9617-6945
               </a>
-              <a href="#" className="flex items-center gap-3 font-body text-sm text-secondary/60 hover:text-gold-light transition-colors">
+              <a href="mailto:contato@kbellaaura.com" className="flex items-center gap-3 font-body text-sm text-secondary/60 hover:text-gold-light transition-colors">
                 <Mail size={16} /> contato@kbellaaura.com
               </a>
             </div>
