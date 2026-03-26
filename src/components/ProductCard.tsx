@@ -12,11 +12,12 @@ export interface Product {
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;
+  onViewDetails: (product: Product) => void;
 }
 
-const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
+const ProductCard = ({ product, onAddToCart, onViewDetails }: ProductCardProps) => {
   return (
-    <div className="group cursor-pointer">
+    <div className="group cursor-pointer" onClick={() => onViewDetails(product)}>
       <div className="relative overflow-hidden bg-card aspect-[3/4]">
         <img
           src={product.image}
@@ -28,7 +29,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
         />
         <div className="absolute inset-0 bg-noir/0 group-hover:bg-noir/20 transition-colors duration-500" />
         <button
-          onClick={() => onAddToCart(product)}
+          onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
           className="absolute bottom-4 left-4 right-4 bg-gradient-gold text-accent-foreground py-3 font-body text-xs tracking-widest uppercase opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 flex items-center justify-center gap-2 shadow-gold"
         >
           <ShoppingBag size={16} />

@@ -17,9 +17,10 @@ export const products: Product[] = [
 
 interface ProductGridProps {
   onAddToCart: (product: Product) => void;
+  onViewDetails: (product: Product) => void;
 }
 
-const ProductGrid = ({ onAddToCart }: ProductGridProps) => {
+const ProductGrid = ({ onAddToCart, onViewDetails }: ProductGridProps) => {
   return (
     <section id="colecao" className="py-24 bg-background">
       <div className="container mx-auto px-6">
@@ -31,8 +32,11 @@ const ProductGrid = ({ onAddToCart }: ProductGridProps) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} />
+            <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} onViewDetails={onViewDetails} />
           ))}
+        </div>
+      </div>
+    </section>
         </div>
       </div>
     </section>
