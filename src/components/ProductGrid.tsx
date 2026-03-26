@@ -36,10 +36,6 @@ const ProductGrid = ({ onAddToCart, onViewDetails }: ProductGridProps) => {
           ))}
         </div>
       </div>
-    </section>
-        </div>
-      </div>
-    </section>
   );
 };
 
