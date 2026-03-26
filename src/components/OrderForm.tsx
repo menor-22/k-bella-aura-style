@@ -13,7 +13,10 @@ const OrderForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Pedido enviado com sucesso! Entraremos em contato em breve.");
+    const text = `Olá! Sou ${formData.name}.\n\n📧 Email: ${formData.email}\n📱 Telefone: ${formData.phone}\n📍 Cidade: ${formData.city} - ${formData.state}\n\n📝 Pedido:\n${formData.message}`;
+    const encoded = encodeURIComponent(text);
+    window.open(`https://wa.me/5585996176945?text=${encoded}`, "_blank");
+    toast.success("Redirecionando para o WhatsApp...");
     setFormData({ name: "", email: "", phone: "", city: "", state: "", message: "" });
   };
 

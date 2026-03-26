@@ -6,12 +6,14 @@ import ProductGrid from "@/components/ProductGrid";
 import AboutSection from "@/components/AboutSection";
 import OrderForm from "@/components/OrderForm";
 import CartDrawer, { CartItem } from "@/components/CartDrawer";
+import ProductDetailModal from "@/components/ProductDetailModal";
 import Footer from "@/components/Footer";
 import { Product } from "@/components/ProductCard";
 
 const Index = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const handleAddToCart = useCallback((product: Product) => {
     setCartItems((prev) => {
@@ -46,7 +48,7 @@ const Index = () => {
     <div className="min-h-screen">
       <Header cartCount={cartCount} onCartClick={() => setCartOpen(true)} />
       <HeroSection />
-      <ProductGrid onAddToCart={handleAddToCart} />
+      <ProductGrid onAddToCart={handleAddToCart} onViewDetails={setSelectedProduct} />
       <AboutSection />
       <OrderForm />
       <Footer />
@@ -57,6 +59,14 @@ const Index = () => {
         onUpdateQuantity={handleUpdateQuantity}
         onRemove={handleRemove}
       />
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          open={!!selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={handleAddToCart}
+        />
+      )}
     </div>
   );
 };
