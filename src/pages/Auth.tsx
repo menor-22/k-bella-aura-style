@@ -1,12 +1,20 @@
-import { lovable } from '@/integrations/lovable/index';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const Auth = () => {
   const handleGoogleLogin = async () => {
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (result?.error) toast.error('Erro ao conectar com Google.');
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`,
+        },
+      });
+
+      if (error) throw error;
+    } catch (error: any) {
+      toast.error(error?.message || 'Erro ao conectar com Google.');
+    }
   };
 
   return (
