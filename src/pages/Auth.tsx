@@ -18,7 +18,14 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      if (isLogin) {
+      if (isForgotPassword) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        toast.success('E-mail de recuperação enviado! Verifique sua caixa de entrada.');
+        setIsForgotPassword(false);
+      } else if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success('Bem-vinda de volta!');
@@ -29,7 +36,7 @@ const Auth = () => {
           options: { data: { full_name: name } },
         });
         if (error) throw error;
-        toast.success('Conta criada com sucesso! Verifique seu e-mail.');
+        toast.success('Conta criada com sucesso!');
       }
     } catch (error: any) {
       toast.error(error.message || 'Ocorreu um erro. Tente novamente.');
