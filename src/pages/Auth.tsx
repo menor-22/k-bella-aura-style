@@ -69,24 +69,34 @@ const Auth = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gold/20">
-          <button
-            onClick={() => setIsLogin(true)}
-            className={`flex-1 py-3 font-body text-sm tracking-widest uppercase transition-colors ${
-              isLogin ? 'text-gold-light border-b-2 border-gold' : 'text-secondary/50 hover:text-secondary'
-            }`}
-          >
-            Entrar
-          </button>
-          <button
-            onClick={() => setIsLogin(false)}
-            className={`flex-1 py-3 font-body text-sm tracking-widest uppercase transition-colors ${
-              !isLogin ? 'text-gold-light border-b-2 border-gold' : 'text-secondary/50 hover:text-secondary'
-            }`}
-          >
-            Criar Conta
-          </button>
-        </div>
+        {!isForgotPassword && (
+          <div className="flex border-b border-gold/20">
+            <button
+              onClick={() => setIsLogin(true)}
+              className={`flex-1 py-3 font-body text-sm tracking-widest uppercase transition-colors ${
+                isLogin ? 'text-gold-light border-b-2 border-gold' : 'text-secondary/50 hover:text-secondary'
+              }`}
+            >
+              Entrar
+            </button>
+            <button
+              onClick={() => setIsLogin(false)}
+              className={`flex-1 py-3 font-body text-sm tracking-widest uppercase transition-colors ${
+                !isLogin ? 'text-gold-light border-b-2 border-gold' : 'text-secondary/50 hover:text-secondary'
+              }`}
+            >
+              Criar Conta
+            </button>
+          </div>
+        )}
+
+        {isForgotPassword && (
+          <div className="text-center">
+            <p className="font-body text-sm text-secondary/60">
+              Digite seu e-mail para receber o link de recuperação
+            </p>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
