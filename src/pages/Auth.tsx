@@ -100,7 +100,7 @@ const Auth = () => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
-          {!isLogin && (
+          {!isLogin && !isForgotPassword && (
             <input
               type="text"
               placeholder="Seu nome completo"
@@ -118,32 +118,60 @@ const Auth = () => {
             required
             className={inputClass}
           />
-          <div className="relative">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Sua senha"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              className={inputClass}
-            />
+          {!isForgotPassword && (
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Sua senha"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                className={inputClass}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-secondary/50 hover:text-gold-light transition-colors"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          )}
+
+          {isLogin && !isForgotPassword && (
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-secondary/50 hover:text-gold-light transition-colors"
+              onClick={() => setIsForgotPassword(true)}
+              className="text-gold-light font-body text-xs hover:text-gold transition-colors"
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              Esqueceu a senha?
             </button>
-          </div>
+          )}
 
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-gradient-gold text-accent-foreground py-4 font-body text-sm tracking-widest uppercase shadow-gold hover:opacity-90 transition-opacity disabled:opacity-50"
           >
-            {loading ? 'Aguarde...' : isLogin ? 'Entrar' : 'Criar Conta'}
+            {loading
+              ? 'Aguarde...'
+              : isForgotPassword
+              ? 'Enviar Link de Recuperação'
+              : isLogin
+              ? 'Entrar'
+              : 'Criar Conta'}
           </button>
+
+          {isForgotPassword && (
+            <button
+              type="button"
+              onClick={() => setIsForgotPassword(false)}
+              className="w-full text-center text-gold-light font-body text-xs hover:text-gold transition-colors"
+            >
+              Voltar para o login
+            </button>
+          )}
         </form>
 
         {/* Divider */}
