@@ -6,6 +6,7 @@ import { Eye, EyeOff } from 'lucide-react';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -17,7 +18,14 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      if (isLogin) {
+      if (isForgotPassword) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        toast.success('E-mail de recuperação enviado! Verifique sua caixa de entrada.');
+        setIsForgotPassword(false);
+      } else if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success('Bem-vinda de volta!');
@@ -28,7 +36,7 @@ const Auth = () => {
           options: { data: { full_name: name } },
         });
         if (error) throw error;
-        toast.success('Conta criada com sucesso! Verifique seu e-mail.');
+        toast.success('Conta criada com sucesso!');
       }
     } catch (error: any) {
       toast.error(error.message || 'Ocorreu um erro. Tente novamente.');
@@ -61,28 +69,38 @@ const Auth = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gold/20">
-          <button
-            onClick={() => setIsLogin(true)}
-            className={`flex-1 py-3 font-body text-sm tracking-widest uppercase transition-colors ${
-              isLogin ? 'text-gold-light border-b-2 border-gold' : 'text-secondary/50 hover:text-secondary'
-            }`}
-          >
-            Entrar
-          </button>
-          <button
-            onClick={() => setIsLogin(false)}
-            className={`flex-1 py-3 font-body text-sm tracking-widest uppercase transition-colors ${
-              !isLogin ? 'text-gold-light border-b-2 border-gold' : 'text-secondary/50 hover:text-secondary'
-            }`}
-          >
-            Criar Conta
-          </button>
-        </div>
+        {!isForgotPassword && (
+          <div className="flex border-b border-gold/20">
+            <button
+              onClick={() => setIsLogin(true)}
+              className={`flex-1 py-3 font-body text-sm tracking-widest uppercase transition-colors ${
+                isLogin ? 'text-gold-light border-b-2 border-gold' : 'text-secondary/50 hover:text-secondary'
+              }`}
+            >
+              Entrar
+            </button>
+            <button
+              onClick={() => setIsLogin(false)}
+              className={`flex-1 py-3 font-body text-sm tracking-widest uppercase transition-colors ${
+                !isLogin ? 'text-gold-light border-b-2 border-gold' : 'text-secondary/50 hover:text-secondary'
+              }`}
+            >
+              Criar Conta
+            </button>
+          </div>
+        )}
+
+        {isForgotPassword && (
+          <div className="text-center">
+            <p className="font-body text-sm text-secondary/60">
+              Digite seu e-mail para receber o link de recuperação
+            </p>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
-          {!isLogin && (
+          {!isLogin && !isForgotPassword && (
             <input
               type="text"
               placeholder="Seu nome completo"
@@ -100,32 +118,60 @@ const Auth = () => {
             required
             className={inputClass}
           />
-          <div className="relative">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Sua senha"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              className={inputClass}
-            />
+          {!isForgotPassword && (
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Sua senha"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                className={inputClass}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-secondary/50 hover:text-gold-light transition-colors"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          )}
+
+          {isLogin && !isForgotPassword && (
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-secondary/50 hover:text-gold-light transition-colors"
+              onClick={() => setIsForgotPassword(true)}
+              className="text-gold-light font-body text-xs hover:text-gold transition-colors"
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              Esqueceu a senha?
             </button>
-          </div>
+          )}
 
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-gradient-gold text-accent-foreground py-4 font-body text-sm tracking-widest uppercase shadow-gold hover:opacity-90 transition-opacity disabled:opacity-50"
           >
-            {loading ? 'Aguarde...' : isLogin ? 'Entrar' : 'Criar Conta'}
+            {loading
+              ? 'Aguarde...'
+              : isForgotPassword
+              ? 'Enviar Link de Recuperação'
+              : isLogin
+              ? 'Entrar'
+              : 'Criar Conta'}
           </button>
+
+          {isForgotPassword && (
+            <button
+              type="button"
+              onClick={() => setIsForgotPassword(false)}
+              className="w-full text-center text-gold-light font-body text-xs hover:text-gold transition-colors"
+            >
+              Voltar para o login
+            </button>
+          )}
         </form>
 
         {/* Divider */}
