@@ -24,7 +24,7 @@ const Auth = () => {
         toast.success('Login realizado com sucesso!');
         navigate('/');
       } else if (mode === 'signup') {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -32,8 +32,15 @@ const Auth = () => {
           },
         });
         if (error) throw error;
-        toast.success('Cadastro realizado! Você já pode entrar.');
-        setMode('login');
+
+        // Se a sessão não veio (ex.: confirmação de e-mail ativa), faz login automático
+        if (!data.session) {
+          const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+          if (signInError) throw signInError;
+        }
+
+        toast.success('Cadastro realizado! Bem-vinda(o).');
+        navigate('/');
       } else if (mode === 'forgot') {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`,
